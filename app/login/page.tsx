@@ -1,7 +1,10 @@
 "use client";
+import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { LoadingIndicator } from "@/app/login/components/loading/loading";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -11,6 +14,7 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function Page() {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -21,6 +25,11 @@ export default function Page() {
   });
 
   function onSubmit(data: LoginFormInputs): void {
+    if (isLoading) {
+      return;
+    }
+
+    setIsLoading(true);
     console.log("Form Data: ", data);
   }
 
@@ -71,9 +80,13 @@ export default function Page() {
           </div>
           <button
             type="submit"
-            className="w-full my-2 bg-slate-900 text-white font-semibold rounded-md p-2 hover:bg-slate-700"
+            className="w-full flex items-center justify-center my-2 bg-slate-900 text-white font-semibold rounded-md p-2 hover:bg-slate-700 focus:bg-slate-700"
           >
-            Login to account
+            {isLoading ? (
+              <LoadingIndicator text="Logging in..." />
+            ) : (
+              "Login to account"
+            )}
           </button>
         </form>
       </div>
