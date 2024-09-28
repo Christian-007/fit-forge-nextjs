@@ -36,7 +36,10 @@ export default function Page() {
       <div className="w-full max-w-sm">
         <form onSubmit={handleSubmit(onSubmit)}>
           <div className="mb-2">
-            <label className="my-2 block text-slate-700 font-semibold">
+            <label
+              htmlFor="email"
+              className="my-2 block text-slate-700 font-semibold"
+            >
               Email
             </label>
             <input
@@ -50,7 +53,10 @@ export default function Page() {
             </p>
           </div>
           <div className="mb-2">
-            <label className="my-2 block text-slate-700 font-semibold">
+            <label
+              htmlFor="password"
+              className="my-2 block text-slate-700 font-semibold"
+            >
               Password
             </label>
             <input
