@@ -5,6 +5,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import { LoadingIndicator } from "@/app/login/components/loading/loading";
+import { AuthRepository } from "@/app/core/auth.repository";
+import { AuthRepositoryHttp } from "@/app/data/auth/auth.repository.http";
 
 const loginSchema = z.object({
   email: z.string().min(1, "Email is required").email("Invalid email address"),
@@ -14,6 +16,7 @@ const loginSchema = z.object({
 type LoginFormInputs = z.infer<typeof loginSchema>;
 
 export default function Page() {
+  const authRepository: AuthRepository = AuthRepositoryHttp();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const {
     register,
@@ -24,13 +27,22 @@ export default function Page() {
     mode: "onChange",
   });
 
-  function onSubmit(data: LoginFormInputs): void {
+  async function onSubmit(data: LoginFormInputs): Promise<void> {
     if (isLoading) {
       return;
     }
 
     setIsLoading(true);
-    console.log("Form Data: ", data);
+
+    try {
+      await authRepository.login({
+        username: data.email,
+        password: data.password,
+      });
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+    }
   }
 
   return (
