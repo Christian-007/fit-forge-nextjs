@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Figtree } from "next/font/google";
 import clsx from "clsx";
 
 import "./globals.css";
+import { Topbar } from "@/app/shared/components";
 
-const inter = Inter({ subsets: ["latin"] });
+const figtree = Figtree({
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "FitForge",
@@ -18,8 +21,16 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="h-full">
-      <body className={clsx(inter.className, "antialiased h-full")}>
-        {children}
+      <body
+        className={clsx(
+          figtree.className,
+          "antialiased flex justify-center items-start min-h-screen bg-[#1D2029] dark:text-white"
+        )}
+      >
+        <div className="w-[480px] h-full dark flex flex-col overflow-hidden">
+          <Topbar />
+          {children}
+        </div>
       </body>
     </html>
   );
