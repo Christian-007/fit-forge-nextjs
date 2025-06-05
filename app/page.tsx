@@ -30,7 +30,7 @@ export default function Home() {
           href="/sign-up"
           className="mt-24 block w-full rounded-full bg-[#38E078] p-4 text-center text-[16px] font-bold text-[#122117] hover:opacity-70"
         >
-          Sign Up Now!
+          Sign up now!
         </Link>
         <Link
           href="/login"

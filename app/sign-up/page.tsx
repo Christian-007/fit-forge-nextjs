@@ -16,7 +16,7 @@ const topbarConfig: TopbarConfig = {
       <ArrowLongLeftIcon className="size-6 text-white" />
     </Link>
   ),
-  center: 'Creating an Account',
+  center: 'Create an Account',
 };
 
 export default function Page() {
