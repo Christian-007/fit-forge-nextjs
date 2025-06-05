@@ -1,17 +1,18 @@
-import type { Metadata } from "next";
-import { Figtree } from "next/font/google";
-import clsx from "clsx";
+import type { Metadata } from 'next';
+import { Figtree } from 'next/font/google';
+import clsx from 'clsx';
 
-import "./globals.css";
-import { Topbar } from "@/app/shared/components";
+import './globals.css';
+import { TopbarProvider } from '@/app/shared/components/topbar/topbar.context';
+import { Topbar } from '@/app/shared/components';
 
 const figtree = Figtree({
-  subsets: ["latin"],
+  subsets: ['latin'],
 });
 
 export const metadata: Metadata = {
-  title: "FitForge",
-  description: "An app for all of your daily fitness needs.",
+  title: 'FitForge',
+  description: 'An app for all of your daily fitness needs.',
 };
 
 export default function RootLayout({
@@ -24,14 +25,14 @@ export default function RootLayout({
       <body
         className={clsx(
           figtree.className,
-          "antialiased flex justify-center items-start min-h-screen bg-[#1D2029] dark:text-white"
+          'flex min-h-screen items-start justify-center bg-[#1D2029] antialiased dark:text-white'
         )}
       >
-        <div className="w-[480px] h-full dark flex flex-col overflow-hidden">
-          <Topbar />
-          <div className="pt-14 bg-[#152119] min-h-screen">
-            {children}
-          </div>
+        <div className="dark flex h-full w-[480px] flex-col overflow-hidden">
+          <TopbarProvider>
+            <Topbar />
+            <div className="min-h-screen bg-[#152119] pt-14">{children}</div>
+          </TopbarProvider>
         </div>
       </body>
     </html>
