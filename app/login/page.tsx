@@ -2,23 +2,17 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLongLeftIcon } from '@heroicons/react/24/solid';
+
+import { LoginFormInputs, loginSchema } from './login.schema';
 
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
 import { AuthRepository } from '@/app/core/auth.repository';
 import { AuthRepositoryHttp } from '@/app/data/auth/auth.repository.http';
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
-
-const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required').email('Invalid email address'),
-  password: z.string().min(1, 'Password is required'),
-});
-
-type LoginFormInputs = z.infer<typeof loginSchema>;
 
 const topbarConfig: TopbarConfig = {
   left: (
