@@ -2,7 +2,7 @@
 
 import { createContext, ReactNode, useContext, useState } from 'react';
 
-type TopbarConfig = {
+export type TopbarConfig = {
   left?: React.ReactNode;
   center?: React.ReactNode;
   right?: React.ReactNode;
@@ -21,9 +21,7 @@ export const TopbarContext = createContext<TopbarContextType>({
 export const useTopbar = () => useContext(TopbarContext);
 
 export const TopbarProvider = ({ children }: { children: ReactNode }) => {
-  const [config, setConfig] = useState<TopbarConfig>({
-    center: 'Fit Forge',
-  });
+  const [config, setConfig] = useState<TopbarConfig>({});
 
   return <TopbarContext.Provider value={{ config, setConfig }}>{children}</TopbarContext.Provider>;
 };
