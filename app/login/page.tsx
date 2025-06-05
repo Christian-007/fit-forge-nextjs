@@ -63,45 +63,50 @@ export default function Page() {
     <>
       <TopbarConfigSetter config={topbarConfig} />
       <div className="flex h-full flex-col items-center justify-center">
-        <img
-          className="my-2"
-          src="fit_forge_logo.png"
-          alt="Fit Forge Logo"
-          width="150"
-          height="150"
-        />
         <div className="w-full max-w-sm">
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="mb-2">
-              <label htmlFor="email" className="my-2 block font-semibold text-slate-700">
+            <div className="mb-4">
+              <label htmlFor="email" className="my-2 block text-[#96C4A8]">
                 Email
               </label>
               <input
                 type="email"
                 id="email"
+                placeholder="your-email@example.com"
+                className="w-full rounded-md bg-[#2645] px-4 py-3 text-[#96C4A8] ring-1 ring-[#2645] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#38E078]"
                 {...register('email')}
-                className="w-full appearance-none rounded-md px-4 py-2 ring-1 ring-slate-400"
               />
-              <p className="mt-1 h-4 text-sm text-red-500">{errors.email?.message}</p>
+              {errors.email && (
+                <p className="mt-1 h-4 text-sm text-red-500">{errors.email?.message}</p>
+              )}
             </div>
-            <div className="mb-2">
-              <label htmlFor="password" className="my-2 block font-semibold text-slate-700">
+            <div className="mb-8">
+              <label htmlFor="password" className="my-2 block text-[#96C4A8]">
                 Password
               </label>
               <input
                 type="password"
                 id="password"
+                placeholder="••••••••"
+                className="w-full rounded-md bg-[#2645] px-4 py-3 text-[#96C4A8] ring-1 ring-[#2645] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#38E078]"
                 {...register('password')}
-                className="w-full appearance-none rounded-md px-4 py-2 ring-1 ring-slate-400"
               />
-              <p className="mt-1 h-4 text-sm text-red-500">{errors.password?.message}</p>
+              {errors.password && (
+                <p className="mt-1 h-4 text-sm text-red-500">{errors.password?.message}</p>
+              )}
             </div>
             <button
               type="submit"
-              className="my-2 flex w-full items-center justify-center rounded-md bg-slate-900 p-2 font-semibold text-white hover:bg-slate-700 focus:bg-slate-700"
+              className="block w-full rounded-full bg-[#38E078] p-4 text-center text-[16px] font-bold text-[#122117] hover:opacity-70"
             >
-              {isLoading ? <LoadingIndicator text="Logging in..." /> : 'Login to account'}
+              {isLoading ? <LoadingIndicator text="Logging in..." /> : 'Login'}
             </button>
+            <div className="mt-4 text-center text-sm text-[#96C4A8]">
+              <span>Don't have an account?</span>
+              <Link href="/sign-up" className="ml-1 underline hover:text-white">
+                Sign up
+              </Link>
+            </div>
           </form>
         </div>
       </div>
