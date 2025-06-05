@@ -29,7 +29,9 @@ export default function RootLayout({
       >
         <div className="w-[480px] h-full dark flex flex-col overflow-hidden">
           <Topbar />
-          {children}
+          <div className="pt-14 bg-[#152119] min-h-screen">
+            {children}
+          </div>
         </div>
       </body>
     </html>
