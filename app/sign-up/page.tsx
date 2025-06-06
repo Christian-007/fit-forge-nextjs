@@ -1,9 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { ArrowLongLeftIcon } from '@heroicons/react/24/solid';
+import { ArrowLongLeftIcon, XCircleIcon } from '@heroicons/react/24/solid';
 
 import { SignUpFormInputs, signUpSchema } from './sign-up.schema';
 import { useUsers } from './hooks/sign-up.hooks';
@@ -35,8 +36,10 @@ export default function Page() {
     mode: 'onChange',
   });
   const { loading, createOneUser } = useUsers(usersRepository);
+  const [submitError, setSubmitError] = useState<boolean>(false);
 
   async function onSubmit(formData: SignUpFormInputs): Promise<void> {
+    setSubmitError(false);
     const [_, error] = await createOneUser({
       name: formData.fullName,
       email: formData.email,
@@ -44,7 +47,8 @@ export default function Page() {
     });
 
     if (error) {
-      console.log('', error);
+      setSubmitError(true);
+      return;
     }
   }
 
@@ -53,6 +57,12 @@ export default function Page() {
       <TopbarConfigSetter config={topbarConfig} />
       <div className="flex h-full flex-col items-center justify-center">
         <div className="w-full max-w-sm">
+          {submitError && (
+            <div className="flex w-full items-center rounded-md bg-red-200 p-5 text-red-500">
+              <XCircleIcon className="size-5 text-red-500" />
+              <span className="ml-2 text-sm">Server timeout. Please try again later.</span>
+            </div>
+          )}
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="mb-4">
               <label htmlFor="fullName" className="my-2 block text-[#96C4A8]">
