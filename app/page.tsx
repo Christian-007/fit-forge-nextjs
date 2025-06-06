@@ -16,7 +16,8 @@ export default function Home() {
         src="/landing-page-illustration.png"
         alt="Picture of someone explaining something"
         width={300}
-        height={200}
+        height={300}
+        priority
       />
       <div className="px-4">
         <h1 className="text-center text-[28px] font-bold">
