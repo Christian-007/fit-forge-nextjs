@@ -1,16 +1,18 @@
 'use client';
 
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLongLeftIcon } from '@heroicons/react/24/solid';
 
 import { SignUpFormInputs, signUpSchema } from './sign-up.schema';
+import { useUsers } from './hooks/sign-up.hooks';
 
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
+import { UsersRepository } from '@/app/core/repositores/users.repository';
+import { UsersRepositoryFitForge } from '@/app/data/users/users.repository.fit-forge';
 
 const topbarConfig: TopbarConfig = {
   left: (
@@ -21,6 +23,8 @@ const topbarConfig: TopbarConfig = {
   center: 'Create an Account',
 };
 
+const usersRepository: UsersRepository = UsersRepositoryFitForge();
+
 export default function Page() {
   const {
     register,
@@ -30,36 +34,17 @@ export default function Page() {
     resolver: zodResolver(signUpSchema),
     mode: 'onChange',
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { loading, createOneUser } = useUsers(usersRepository);
 
   async function onSubmit(formData: SignUpFormInputs): Promise<void> {
-    setIsLoading(true);
+    const [_, error] = await createOneUser({
+      name: formData.fullName,
+      email: formData.email,
+      password: formData.password,
+    });
 
-    try {
-      const res = await fetch('http://localhost:4000/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          name: formData.fullName,
-          email: formData.email,
-          password: formData.password,
-        }),
-      });
-      if (!res.ok) {
-        const err = await res.json();
-        console.log('Error: ', err.message);
-        setIsLoading(false);
-        return;
-      }
-
-      const data = await res.json();
-      setIsLoading(false);
-      console.log('data: ', data);
-    } catch (error) {
-      setIsLoading(false);
-      console.log('Something went wrong.');
+    if (error) {
+      console.log('', error);
     }
   }
 
@@ -130,11 +115,11 @@ export default function Page() {
               )}
             </div>
             <button
-              disabled={isLoading}
+              disabled={loading}
               type="submit"
               className="block w-full rounded-full bg-[#38E078] p-4 text-center text-[16px] font-bold text-[#122117] hover:opacity-70"
             >
-              {isLoading ? <LoadingIndicator text="Signing up..." /> : 'Sign Up'}
+              {loading ? <LoadingIndicator text="Signing up..." /> : 'Sign Up'}
             </button>
             <div className="mt-4 text-center text-sm text-[#96C4A8]">
               <span>Already have an account?</span>
