@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLongLeftIcon, XCircleIcon } from '@heroicons/react/24/solid';
 
@@ -37,6 +38,7 @@ export default function Page() {
   });
   const { loading, createOneUser } = useUsers(usersRepository);
   const [submitError, setSubmitError] = useState<boolean>(false);
+  const router = useRouter();
 
   async function onSubmit(formData: SignUpFormInputs): Promise<void> {
     setSubmitError(false);
@@ -50,6 +52,8 @@ export default function Page() {
       setSubmitError(true);
       return;
     }
+
+    router.push('/sign-up/success');
   }
 
   return (
