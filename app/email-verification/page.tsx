@@ -1,14 +1,26 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
+
+import { useEmailVerification } from './hooks/email-verification.hooks';
+
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
+import { AuthRepository } from '@/app/core/auth.repository';
+import { AuthRepositoryHttp } from '@/app/data/auth/auth.repository.http';
 
 const topbarConfig: TopbarConfig = {
   center: 'Fit Forge',
 };
 
+const authRepository: AuthRepository = AuthRepositoryHttp();
+
 export default function Page() {
+  const searchParams = useSearchParams();
+  const token = searchParams.get('token');
+  useEmailVerification(token, { authRepository });
+
   return (
     <>
       <TopbarConfigSetter config={topbarConfig} />
