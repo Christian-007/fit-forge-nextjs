@@ -3,6 +3,7 @@ import { AuthRepository } from '@/app/core/auth.repository';
 import { FetchError } from '@/app/shared/errors/fetch.error';
 
 import { UserResponseDtoFitForge } from '../users/user-response.dto.fit-forge';
+import { LoginResponseDtoHttp } from './auth-response.dto.http';
 
 export function AuthRepositoryHttp(): AuthRepository {
   const baseUrl: string | undefined = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -11,17 +12,25 @@ export function AuthRepositoryHttp(): AuthRepository {
     throw new Error('baseUrl is not defined!');
   }
 
-  async function login(data: AuthEntity): Promise<void> {
-    const res = await fetch(`${baseUrl}/auth/login`, {
+  async function login(data: AuthEntity): Promise<LoginResponseDtoHttp> {
+    const res = await fetch('/api/login', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      throw new FetchError(res, `HTTP error! Status: ${res.status} - ${res.statusText}`);
+      const errResponseBody = await res.json().catch(() => {});
+      console.log('RES!OK: ', errResponseBody);
+      throw new FetchError(
+        res,
+        `Next.js API HTTP error! Status: ${res.status} - ${res.statusText}, Message: ${errResponseBody.message}`
+      );
     }
 
-    return await res.json();
+    const resJson = await res.json();
+    return resJson;
   }
 
   async function verify(token: string): Promise<UserResponseDtoFitForge> {
