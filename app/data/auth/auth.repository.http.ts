@@ -22,7 +22,6 @@ export function AuthRepositoryHttp(): AuthRepository {
     });
     if (!res.ok) {
       const errResponseBody = await res.json().catch(() => {});
-      console.log('RES!OK: ', errResponseBody);
       throw new FetchError(
         res,
         `Next.js API HTTP error! Status: ${res.status} - ${res.statusText}, Message: ${errResponseBody.message}`
