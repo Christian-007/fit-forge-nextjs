@@ -8,7 +8,7 @@ export function Topbar() {
   const { config } = useContext(TopbarContext);
 
   return (
-    <header className="fixed flex w-[480px] items-center justify-between bg-[#152119] p-4 pb-2">
+    <header className="fixed flex w-full items-center justify-between bg-[#152119] p-4 pb-2 sm:w-[480px]">
       <div className="flex-none">{config.left}</div>
       <div className="grow text-center text-lg font-bold leading-tight">{config.center}</div>
       <div className="flex flex-none justify-end">{config.right}</div>
