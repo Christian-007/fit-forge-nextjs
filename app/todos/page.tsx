@@ -30,9 +30,8 @@ export default function Page() {
   const fetchAllTodos = async () => {
     setIsLoading(true);
     try {
-      const res = await todosRepository.findAll();
+      await todosRepository.findAll();
       setIsLoading(false);
-      setTodos(res.results);
     } catch (err) {
       setIsLoading(false);
     }
@@ -80,6 +79,26 @@ export default function Page() {
       );
     }
 
+    const updateTodoStatus = async (todoId: number, isCompleted: boolean) => {
+      await todosRepository.updateOne({
+        id: todoId,
+        isCompleted,
+      });
+    };
+
+    const handleOnChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>, todoId: number) => {
+      const checkedValue = event.target.checked;
+      const updatedTodos = todos.map((todo) => {
+        if (todo.id === todoId) {
+          return { ...todo, isCompleted: checkedValue };
+        }
+        return todo;
+      });
+
+      setTodos(updatedTodos);
+      updateTodoStatus(todoId, checkedValue);
+    };
+
     return (
       <>
         <div className="px-8 py-4">
@@ -90,6 +109,8 @@ export default function Page() {
                   <input
                     className="peer size-3.5 appearance-none rounded-sm border border-[#366347] accent-[#38E078] checked:appearance-auto"
                     type="checkbox"
+                    onChange={(e) => handleOnChangeCheckbox(e, todo.id)}
+                    checked={todo.isCompleted}
                   />
                   <span className="select-none text-gray-700 peer-checked:text-gray-400 peer-checked:line-through dark:text-gray-300">
                     {todo.title}
