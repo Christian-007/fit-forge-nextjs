@@ -32,6 +32,21 @@ export function AuthRepositoryHttp(): AuthRepository {
     return resJson;
   }
 
+  async function logout(): Promise<void> {
+    const res = await fetch('/api/logout', {
+      method: 'POST',
+    });
+    if (!res.ok) {
+      const errResponseBody = await res.json().catch(() => {});
+      throw new FetchError(
+        res,
+        `Next.js API HTTP error! Status: ${res.status} - ${res.statusText}, Message: ${errResponseBody.message}`
+      );
+    }
+
+    return await res.json();
+  }
+
   async function verify(token: string): Promise<UserResponseDtoFitForge> {
     const res = await fetch(`${baseUrl}/auth/verify/${token}`, {
       method: 'POST',
@@ -46,6 +61,7 @@ export function AuthRepositoryHttp(): AuthRepository {
 
   return {
     login,
+    logout,
     verify,
   };
 }

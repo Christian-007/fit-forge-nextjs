@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const config = {
-  matcher: ['/todos/:path*', '/login'],
+  matcher: ['/todos/:path*', '/login', '/profile'],
 };
 
-export const PROTECTED_ROUTES = new Set(['/todos', '/todos/add']);
+export const PROTECTED_ROUTES = new Set(['/todos', '/todos/add', '/profile']);
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
