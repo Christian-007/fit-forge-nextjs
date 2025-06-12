@@ -24,14 +24,15 @@ const topbarConfig: TopbarConfig = {
 const todosRepository: TodosRepository = TodosRepositoryHttp();
 
 export default function Page() {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [todos, setTodos] = useState<TodosDtoHttp[]>([]);
 
   const fetchAllTodos = async () => {
     setIsLoading(true);
     try {
-      await todosRepository.findAll();
+      const res = await todosRepository.findAll();
       setIsLoading(false);
+      setTodos(res.results);
     } catch (err) {
       setIsLoading(false);
     }
@@ -44,20 +45,20 @@ export default function Page() {
   const renderMainContent = () => {
     if (isLoading) {
       return (
-        <>
+        <div className="flex h-full flex-col items-center justify-center">
           <div className="px-4 pt-10">
             <h1 className="text-center text-[28px] font-bold">
               <LoadingIndicator text="Getting your todos..." />
             </h1>
             <p className="mt-3 text-center">Please hold on while we fetch your todos.</p>
           </div>
-        </>
+        </div>
       );
     }
 
     if (todos.length === 0) {
       return (
-        <>
+        <div className="flex h-full flex-col items-center justify-center">
           <Image
             src="/empty-todo.png"
             alt="Picture of sending a message"
@@ -75,7 +76,7 @@ export default function Page() {
               Add todo
             </Link>
           </div>
-        </>
+        </div>
       );
     }
 
@@ -100,7 +101,7 @@ export default function Page() {
     };
 
     return (
-      <>
+      <div className="flex h-full flex-col justify-center">
         <div className="px-8 py-4">
           <fieldset className="space-y-3">
             {todos.map((todo) => (
@@ -123,14 +124,14 @@ export default function Page() {
             ))}
           </fieldset>
         </div>
-      </>
+      </div>
     );
   };
 
   return (
     <>
       <TopbarConfigSetter config={topbarConfig} />
-      <div className="flex h-full flex-col justify-center">{renderMainContent()}</div>
+      {renderMainContent()}
       <BottomBar />
     </>
   );
