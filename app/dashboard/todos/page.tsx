@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { EllipsisVerticalIcon, PlusCircleIcon } from '@heroicons/react/24/solid';
 
-import { BottomBar, TopbarConfig } from '@/app/shared/components';
+import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
 import { TodosRepository } from '@/app/core/repositores/todos.repository';
@@ -132,7 +132,6 @@ export default function Page() {
     <>
       <TopbarConfigSetter config={topbarConfig} />
       {renderMainContent()}
-      <BottomBar />
     </>
   );
 }

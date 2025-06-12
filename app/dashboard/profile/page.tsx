@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { BottomBar, TopbarConfig } from '@/app/shared/components';
+import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
 import { AuthRepository } from '@/app/core/auth.repository';
 import { AuthRepositoryHttp } from '@/app/data/auth/auth.repository.http';
@@ -54,7 +54,6 @@ export default function Page() {
           </button>
         </div>
       </div>
-      <BottomBar />
     </>
   );
 }
