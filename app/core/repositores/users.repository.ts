@@ -1,5 +1,5 @@
-import { UserEntity } from '@/app/core/entities/user.entity';
+import { CreateUserDtoHttp } from '@/app/data/users/user.dto.http';
 
 export interface UsersRepository {
-  create(data: UserEntity): Promise<void>;
+  create(data: CreateUserDtoHttp): Promise<void>;
 }

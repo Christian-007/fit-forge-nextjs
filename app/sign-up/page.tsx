@@ -14,7 +14,7 @@ import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
 import { UsersRepository } from '@/app/core/repositores/users.repository';
-import { UsersRepositoryFitForge } from '@/app/data/users/users.repository.fit-forge';
+import { UsersRepositoryHttp } from '@/app/data/users/users.repository.http';
 
 const topbarConfig: TopbarConfig = {
   left: (
@@ -25,7 +25,7 @@ const topbarConfig: TopbarConfig = {
   center: 'Create an Account',
 };
 
-const usersRepository: UsersRepository = UsersRepositoryFitForge();
+const usersRepository: UsersRepository = UsersRepositoryHttp();
 
 export default function Page() {
   const {

@@ -2,8 +2,7 @@ import { AuthEntity } from '@/app/core/auth.entity';
 import { AuthRepository } from '@/app/core/auth.repository';
 import { FetchError } from '@/app/shared/errors/fetch.error';
 
-import { UserResponseDtoFitForge } from '../users/user-response.dto.fit-forge';
-import { LoginResponseDtoHttp } from './auth-response.dto.http';
+import { AuthVerifyDtoHttp, LoginResponseDtoHttp } from './auth.dto.http';
 
 export function AuthRepositoryHttp(): AuthRepository {
   const baseUrl: string | undefined = process.env.NEXT_PUBLIC_BASE_API_URL;
@@ -28,8 +27,7 @@ export function AuthRepositoryHttp(): AuthRepository {
       );
     }
 
-    const resJson = await res.json();
-    return resJson;
+    return await res.json();
   }
 
   async function logout(): Promise<void> {
@@ -47,7 +45,7 @@ export function AuthRepositoryHttp(): AuthRepository {
     return await res.json();
   }
 
-  async function verify(token: string): Promise<UserResponseDtoFitForge> {
+  async function verify(token: string): Promise<AuthVerifyDtoHttp> {
     const res = await fetch(`${baseUrl}/auth/verify/${token}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
