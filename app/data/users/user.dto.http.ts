@@ -3,3 +3,11 @@ export interface CreateUserDtoHttp {
   email: string;
   password: string;
 }
+
+export interface UserProfileDtoHttp {
+  userId: number;
+  name: string;
+  email: string;
+  role: number;
+  subscriptionStatus: string;
+}

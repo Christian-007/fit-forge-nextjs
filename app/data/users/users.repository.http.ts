@@ -1,6 +1,7 @@
 import { UsersRepository } from '@/app/core/repositores/users.repository';
 import { FetchError } from '@/app/shared/errors/fetch.error';
-import { CreateUserDtoHttp } from '@/app/data/users/user.dto.http';
+import { CreateUserDtoHttp, UserProfileDtoHttp } from '@/app/data/users/user.dto.http';
+import { NextHttpResult } from '@/app/shared/http/http';
 
 export function UsersRepositoryHttp(): UsersRepository {
   const baseUrl: string = 'http://localhost:4000';
@@ -25,7 +26,38 @@ export function UsersRepositoryHttp(): UsersRepository {
     return await res.json();
   }
 
+  async function getProfile(): Promise<UserProfileDtoHttp> {
+    try {
+      const res = await fetch('/api/proxy/profile', {
+        method: 'GET',
+      });
+
+      if (!res.ok) {
+        const errResponseBody = await res.json().catch(() => {});
+        throw new FetchError(
+          res,
+          `Next.js API HTTP error! Status: ${res.status} - ${res.statusText}, Message: ${errResponseBody.message}`
+        );
+      }
+
+      const nextResult: NextHttpResult<UserProfileDtoHttp> = await res.json();
+      return {
+        userId: nextResult.data.userId,
+        email: nextResult.data.email,
+        name: nextResult.data.name,
+        role: nextResult.data.role,
+        subscriptionStatus: nextResult.data.subscriptionStatus,
+      };
+    } catch (error: any) {
+      if (error instanceof FetchError) {
+        throw error;
+      }
+      throw new Error(`Next.js API HTTP error! Message: ${error.message}`);
+    }
+  }
+
   return {
     create,
+    getProfile,
   };
 }
