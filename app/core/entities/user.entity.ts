@@ -1,6 +1,8 @@
 export interface UserEntity {
-  id?: number;
+  id: number;
   name: string;
   email: string;
-  password: string;
+  role: number;
+  subscriptionStatus: string;
+  emailVerifiedAt?: string;
 }
