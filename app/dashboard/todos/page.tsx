@@ -1,9 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { EllipsisVerticalIcon, PlusCircleIcon } from '@heroicons/react/24/solid';
+import { PlusCircleIcon } from '@heroicons/react/24/solid';
+import debounce from 'lodash.debounce';
+
+import { TodoItem } from './components/todo-item';
 
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
@@ -41,6 +44,32 @@ export default function Page() {
   useEffect(() => {
     fetchAllTodos();
   }, []);
+
+  const debouncedUpdate = useMemo(() => {
+    return debounce((todoId: number, isCompleted: boolean) => {
+      updateTodoStatus(todoId, isCompleted);
+    }, 300);
+  }, []);
+
+  const updateTodoStatus = async (todoId: number, isCompleted: boolean) => {
+    await todosRepository.updateOne({
+      id: todoId,
+      isCompleted,
+    });
+  };
+
+  const handleOnChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>, todoId: number) => {
+    const checkedValue = event.target.checked;
+    const updatedTodos = todos.map((todo) => {
+      if (todo.id === todoId) {
+        return { ...todo, isCompleted: checkedValue };
+      }
+      return todo;
+    });
+
+    setTodos(updatedTodos);
+    debouncedUpdate(todoId, checkedValue);
+  };
 
   const renderMainContent = () => {
     if (isLoading) {
@@ -80,47 +109,16 @@ export default function Page() {
       );
     }
 
-    const updateTodoStatus = async (todoId: number, isCompleted: boolean) => {
-      await todosRepository.updateOne({
-        id: todoId,
-        isCompleted,
-      });
-    };
-
-    const handleOnChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>, todoId: number) => {
-      const checkedValue = event.target.checked;
-      const updatedTodos = todos.map((todo) => {
-        if (todo.id === todoId) {
-          return { ...todo, isCompleted: checkedValue };
-        }
-        return todo;
-      });
-
-      setTodos(updatedTodos);
-      updateTodoStatus(todoId, checkedValue);
-    };
-
     return (
       <div className="flex h-full flex-col justify-center">
         <div className="px-8 py-4">
           <fieldset className="space-y-3">
-            {todos.map((todo) => (
-              <div key={todo.id} className="grid grid-cols-[1fr_24px] items-center gap-6 space-x-4">
-                <label className="peer grid grid-cols-[auto_1fr] items-center gap-3 rounded-md px-2 hover:bg-gray-100 dark:hover:bg-white/5">
-                  <input
-                    className="peer size-3.5 appearance-none rounded-sm border border-[#366347] accent-[#38E078] checked:appearance-auto"
-                    type="checkbox"
-                    onChange={(e) => handleOnChangeCheckbox(e, todo.id)}
-                    checked={todo.isCompleted}
-                  />
-                  <span className="select-none text-gray-700 peer-checked:text-gray-400 peer-checked:line-through dark:text-gray-300">
-                    {todo.title}
-                  </span>
-                </label>
-                <button className="peer-has-checked:hidden size-[26px] rounded-md p-1 hover:bg-white/5">
-                  <EllipsisVerticalIcon className="size-5 text-white" />
-                </button>
-              </div>
+            {todos.map((todo: TodosDtoHttp) => (
+              <TodoItem
+                key={todo.id}
+                todo={todo}
+                handleOnChangeFn={(e, todoId) => handleOnChangeCheckbox(e, todoId)}
+              />
             ))}
           </fieldset>
         </div>
