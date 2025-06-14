@@ -3,13 +3,8 @@ const nextConfig = {
   async redirects() {
     return [
       {
-        source: '/dashboard/todos',
-        destination: '/todos',
-        permanent: true,
-      },
-      {
-        source: '/dashboard/profile',
-        destination: '/profile',
+        source: '/dashboard/:path*',
+        destination: '/:path*',
         permanent: true,
       },
     ];
@@ -17,6 +12,8 @@ const nextConfig = {
   async rewrites() {
     return [
       { source: '/todos', destination: '/dashboard/todos' },
+      { source: '/todos/add', destination: '/dashboard/todos/add' },
+      { source: '/todos/:id', destination: '/dashboard/todos/:id' },
       { source: '/profile', destination: '/dashboard/profile' },
     ];
   },
