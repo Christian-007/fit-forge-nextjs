@@ -3,8 +3,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { PlusCircleIcon } from '@heroicons/react/24/solid';
+import { PencilSquareIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import debounce from 'lodash.debounce';
+import clsx from 'clsx';
 
 import { TodoItem } from './components/todo-item';
 
@@ -28,6 +29,8 @@ const todosRepository: TodosRepository = TodosRepositoryHttp();
 
 export default function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedTodoId, setSelectedTodoId] = useState<number>(-1);
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
   const [todos, setTodos] = useState<TodosDtoHttp[]>([]);
 
   const fetchAllTodos = async () => {
@@ -69,6 +72,24 @@ export default function Page() {
 
     setTodos(updatedTodos);
     debouncedUpdate(todoId, checkedValue);
+  };
+
+  const handleOnClickTodoOption = (todoId: number) => {
+    setIsBottomSheetOpen(true);
+    setSelectedTodoId(todoId);
+  };
+
+  const handleClickCloseBottomSheet = () => {
+    setIsBottomSheetOpen(false);
+    setSelectedTodoId(-1);
+  };
+
+  const handleOnClickEditTodo = () => {
+    console.log('[Edit] selectedTodoId: ', selectedTodoId);
+  };
+
+  const handleOnClickDeleteTodo = () => {
+    console.log('[Delete] selectedTodoId: ', selectedTodoId);
   };
 
   const renderMainContent = () => {
@@ -118,6 +139,7 @@ export default function Page() {
                 key={todo.id}
                 todo={todo}
                 handleOnChangeFn={(e, todoId) => handleOnChangeCheckbox(e, todoId)}
+                handleOnClickOptionFn={(todoId) => handleOnClickTodoOption(todoId)}
               />
             ))}
           </fieldset>
@@ -129,6 +151,45 @@ export default function Page() {
   return (
     <>
       <TopbarConfigSetter config={topbarConfig} />
+      <div
+        className={clsx(
+          isBottomSheetOpen ? 'opacity-100' : 'pointer-events-none opacity-0',
+          'fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition-opacity duration-200'
+        )}
+      >
+        <div
+          className={clsx(
+            isBottomSheetOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0',
+            'absolute bottom-0 flex w-full transform flex-col justify-start rounded-lg rounded-b-none bg-zinc-800 p-4 shadow-lg transition-all duration-300 sm:w-[480px]'
+          )}
+        >
+          <div className="mb-4 flex w-full items-center justify-between">
+            <div className="grow text-center leading-tight">
+              <h2 className="text-lg font-semibold">Options</h2>
+            </div>
+            <div className="flex flex-none justify-end">
+              <button onClick={handleClickCloseBottomSheet}>
+                <XMarkIcon className="size-4" />
+              </button>
+            </div>
+          </div>
+          <button
+            onClick={handleOnClickEditTodo}
+            className="mb-2 flex items-center rounded p-2 text-sm font-medium hover:bg-white/5"
+          >
+            <PencilSquareIcon className="size-4" />
+            <span className="pl-4">Edit</span>
+          </button>
+          <button
+            onClick={handleOnClickDeleteTodo}
+            className="flex items-center rounded p-2 text-sm font-medium hover:bg-white/5"
+          >
+            <TrashIcon className="size-4" />
+            <span className="pl-4">Delete</span>
+          </button>
+        </div>
+      </div>
+
       {renderMainContent()}
     </>
   );

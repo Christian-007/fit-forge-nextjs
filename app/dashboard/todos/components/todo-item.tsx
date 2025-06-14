@@ -4,9 +4,10 @@ import { TodosDtoHttp } from '@/app/data/todos/todos.dto.http';
 type TodoItemProps = {
   todo: TodosDtoHttp;
   handleOnChangeFn: (event: React.ChangeEvent<HTMLInputElement>, todoId: number) => void;
+  handleOnClickOptionFn: (todoId: number) => void;
 };
 
-export function TodoItem({ todo, handleOnChangeFn }: TodoItemProps) {
+export function TodoItem({ todo, handleOnChangeFn, handleOnClickOptionFn }: TodoItemProps) {
   return (
     <div key={todo.id} className="grid grid-cols-[1fr_24px] items-center gap-6 space-x-4">
       <label className="peer grid grid-cols-[auto_1fr] items-center gap-3 rounded-md px-2 hover:bg-gray-100 dark:hover:bg-white/5">
@@ -20,7 +21,10 @@ export function TodoItem({ todo, handleOnChangeFn }: TodoItemProps) {
           {todo.title}
         </span>
       </label>
-      <button className="peer-has-checked:hidden size-[26px] rounded-md p-1 hover:bg-white/5">
+      <button
+        className="peer-has-checked:hidden size-[26px] rounded-md p-1 hover:bg-white/5"
+        onClick={() => handleOnClickOptionFn(todo.id)}
+      >
         <EllipsisVerticalIcon className="size-5 text-white" />
       </button>
     </div>
