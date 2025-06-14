@@ -5,12 +5,21 @@ import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
 import { GiftIcon, ListBulletIcon, UserIcon } from '@heroicons/react/24/solid';
 
+import { BOTTOM_BAR_HIDDEN_ROUTES } from './constant';
+
 export function BottomBar() {
   const currentPathname = usePathname();
 
   const hasActiveLink = (url: string) => {
     return currentPathname === url ? 'text-white' : 'text-[#96C4A8]';
   };
+
+  const shouldHide = BOTTOM_BAR_HIDDEN_ROUTES.some((prefix: string) =>
+    currentPathname.startsWith(prefix)
+  );
+  if (shouldHide) {
+    return null;
+  }
 
   return (
     <nav className="fixed bottom-0 flex w-full items-center justify-between bg-[#1C3024] px-12 py-3 sm:w-[480px]">
