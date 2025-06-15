@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { XMarkIcon } from '@heroicons/react/24/solid';
 
-import { AddTodoForm } from './add-todo-form';
+import EditTodoForm from './edit-todo-form';
 
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
@@ -12,16 +12,18 @@ const topbarConfig: TopbarConfig = {
       <XMarkIcon className="size-6 text-white" />
     </Link>
   ),
-  center: 'Add Todo',
+  center: 'Edit Todo',
 };
 
-export default function Page() {
+export default async function Page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+
   return (
     <>
       <TopbarConfigSetter config={topbarConfig} />
       <div className="flex h-full flex-col items-center justify-center">
         <div className="w-full max-w-sm">
-          <AddTodoForm />
+          <EditTodoForm todoId={+id} />
         </div>
       </div>
     </>

@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { PencilSquareIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import debounce from 'lodash.debounce';
 import clsx from 'clsx';
@@ -32,6 +33,7 @@ export default function Page() {
   const [selectedTodoId, setSelectedTodoId] = useState<number>(-1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
   const [todos, setTodos] = useState<TodosDtoHttp[]>([]);
+  const router = useRouter();
 
   const fetchAllTodos = async () => {
     setIsLoading(true);
@@ -85,11 +87,15 @@ export default function Page() {
   };
 
   const handleOnClickEditTodo = () => {
-    console.log('[Edit] selectedTodoId: ', selectedTodoId);
+    router.push(`/todos/${selectedTodoId}`);
   };
 
-  const handleOnClickDeleteTodo = () => {
-    console.log('[Delete] selectedTodoId: ', selectedTodoId);
+  const handleOnClickDeleteTodo = async () => {
+    todosRepository.deleteOne(selectedTodoId);
+    const updatedTodos = todos.filter((todo: TodosDtoHttp) => todo.id !== selectedTodoId);
+    setTodos(updatedTodos);
+
+    handleClickCloseBottomSheet();
   };
 
   const renderMainContent = () => {
