@@ -16,6 +16,8 @@ import { LoadingIndicator } from '@/app/login/components/loading/loading';
 import { TodosRepository } from '@/app/core/repositores/todos.repository';
 import { TodosRepositoryHttp } from '@/app/data/todos/todos.repository.http';
 import { TodosDtoHttp } from '@/app/data/todos/todos.dto.http';
+import { safeFetchJson } from '@/lib/http/safe-json';
+import { CollectionHttp } from '@/src/dtos/todo.dto.http';
 
 const topbarConfig: TopbarConfig = {
   center: 'My Todos',
@@ -37,13 +39,17 @@ export default function Page() {
 
   const fetchAllTodos = async () => {
     setIsLoading(true);
-    try {
-      const res = await todosRepository.findAll();
+    const fetchJsonResult = await safeFetchJson<CollectionHttp<TodosDtoHttp>>(`/api/todos`, {
+      method: 'GET',
+    });
+
+    if (!fetchJsonResult.ok) {
       setIsLoading(false);
-      setTodos(res.results);
-    } catch (err) {
-      setIsLoading(false);
+      return;
     }
+
+    setTodos((fetchJsonResult.body as CollectionHttp<TodosDtoHttp>).results);
+    setIsLoading(false);
   };
 
   useEffect(() => {
