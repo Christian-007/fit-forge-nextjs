@@ -78,7 +78,7 @@ export function createTodoHandler(options: TodoHandlerOptions) {
       return Response.json({ error: res.error }, { status: res.status });
     }
 
-    return Response.json(res.body, { status: res.status });
+    return new Response(null, { status: 204 });
   }
 
   async function deleteOneTodo(id: number) {

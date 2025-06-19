@@ -36,17 +36,17 @@ export function createHttpClient() {
         };
       }
 
-      let body: T | undefined;
+      let responseBody: T | undefined;
 
       if (res.status !== 204) {
-        body = await res.json();
+        responseBody = await getResponseBody(res);
       }
 
       return {
         ok: true,
         status: res.status,
         statusText: res.statusText,
-        body,
+        body: responseBody,
       };
     } catch (err) {
       return {
@@ -56,6 +56,22 @@ export function createHttpClient() {
         error: err instanceof Error ? err.message : 'Unexpected error happened',
       };
     }
+  }
+
+  async function getResponseBody(res: Response): Promise<any | undefined> {
+    let result: any = {};
+    const rawBody = await res.text();
+    const hasResponseBody = !!rawBody.trim();
+
+    if (hasResponseBody) {
+      try {
+        result = JSON.parse(rawBody);
+      } catch (_) {
+        result = {};
+      }
+    }
+
+    return result;
   }
 
   return {

@@ -23,10 +23,7 @@ export function TodosRepositoryHttp(): TodosRepository {
     todo: CreateTodoDto,
     options?: HttpOptions
   ): Promise<HttpResponse<CreateTodoResponseDto>> {
-    return await httpClient.post(`${baseUrl}/todos`, {
-      ...options,
-      body: todo,
-    });
+    return await httpClient.post(`${baseUrl}/todos`, todo, options);
   }
 
   async function updateOne(
@@ -34,10 +31,7 @@ export function TodosRepositoryHttp(): TodosRepository {
     options?: HttpOptions
   ): Promise<HttpResponse<void>> {
     const reqBody: Omit<UpdateTodoDto, 'id'> = mapUpdateTodoBody(updateTodo);
-    return await httpClient.patch<void>(`${baseUrl}/todos/${updateTodo.id}`, {
-      ...options,
-      body: reqBody,
-    });
+    return await httpClient.patch<void>(`${baseUrl}/todos/${updateTodo.id}`, reqBody, options);
   }
 
   async function deleteOne(todoId: number, options?: HttpOptions): Promise<HttpResponse<void>> {

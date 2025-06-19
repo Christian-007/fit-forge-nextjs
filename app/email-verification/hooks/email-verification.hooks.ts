@@ -3,13 +3,9 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { AuthRepository } from '@/app/core/auth.repository';
+import { safeFetchJson } from '@/lib/http/safe-json';
 
-type DependencyOptions = {
-  authRepository: AuthRepository;
-};
-
-export const useEmailVerification = (token: string | null, options: DependencyOptions): void => {
+export const useEmailVerification = (token: string | null): void => {
   const router = useRouter();
 
   useEffect(() => {
@@ -19,16 +15,17 @@ export const useEmailVerification = (token: string | null, options: DependencyOp
     }
 
     const verify = async (): Promise<void> => {
-      const { authRepository } = options;
-      try {
-        await authRepository.verify(token);
-        router.push('/email-verification/success');
-      } catch (err: any) {
-        console.log('Err: ', err);
+      const fetchJsonResult = await safeFetchJson<void>(`/api/verify/${token}`, {
+        method: 'POST',
+      });
+      if (!fetchJsonResult.ok) {
+        console.log('error: failed email verification');
         router.push('/email-verification/failed');
       }
+
+      router.push('/email-verification/success');
     };
 
     verify();
-  }, [token, options]);
+  }, [token]);
 };

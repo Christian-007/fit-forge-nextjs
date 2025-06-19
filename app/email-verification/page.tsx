@@ -14,12 +14,10 @@ const topbarConfig: TopbarConfig = {
   center: 'Fit Forge',
 };
 
-const authRepository: AuthRepository = AuthRepositoryHttp();
-
 export default function Page() {
   const searchParams = useSearchParams();
   const token = searchParams.get('token');
-  useEmailVerification(token, { authRepository });
+  useEmailVerification(token);
 
   return (
     <>

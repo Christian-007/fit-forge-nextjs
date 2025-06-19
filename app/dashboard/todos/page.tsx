@@ -13,11 +13,9 @@ import { TodoItem } from './components/todo-item';
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
-import { TodosRepository } from '@/app/core/repositores/todos.repository';
-import { TodosRepositoryHttp } from '@/app/data/todos/todos.repository.http';
-import { TodosDtoHttp } from '@/app/data/todos/todos.dto.http';
 import { safeFetchJson } from '@/lib/http/safe-json';
 import { CollectionHttp } from '@/src/dtos/todo.dto.http';
+import { TodosDto, UpdateTodoDto } from '@/src/dtos/todo.dto';
 
 const topbarConfig: TopbarConfig = {
   center: 'My Todos',
@@ -28,18 +26,16 @@ const topbarConfig: TopbarConfig = {
   ),
 };
 
-const todosRepository: TodosRepository = TodosRepositoryHttp();
-
 export default function Page() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedTodoId, setSelectedTodoId] = useState<number>(-1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
-  const [todos, setTodos] = useState<TodosDtoHttp[]>([]);
+  const [todos, setTodos] = useState<TodosDto[]>([]);
   const router = useRouter();
 
   const fetchAllTodos = async () => {
     setIsLoading(true);
-    const fetchJsonResult = await safeFetchJson<CollectionHttp<TodosDtoHttp>>(`/api/todos`, {
+    const fetchJsonResult = await safeFetchJson<CollectionHttp<TodosDto>>(`/api/todos`, {
       method: 'GET',
     });
 
@@ -48,7 +44,7 @@ export default function Page() {
       return;
     }
 
-    setTodos((fetchJsonResult.body as CollectionHttp<TodosDtoHttp>).results);
+    setTodos((fetchJsonResult.body as CollectionHttp<TodosDto>).results);
     setIsLoading(false);
   };
 
@@ -63,9 +59,13 @@ export default function Page() {
   }, []);
 
   const updateTodoStatus = async (todoId: number, isCompleted: boolean) => {
-    await todosRepository.updateOne({
+    const dto: UpdateTodoDto = {
       id: todoId,
       isCompleted,
+    };
+    safeFetchJson<void>(`/api/todos/${todoId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
     });
   };
 
@@ -97,8 +97,10 @@ export default function Page() {
   };
 
   const handleOnClickDeleteTodo = async () => {
-    todosRepository.deleteOne(selectedTodoId);
-    const updatedTodos = todos.filter((todo: TodosDtoHttp) => todo.id !== selectedTodoId);
+    safeFetchJson<void>(`/api/todos/${selectedTodoId}`, {
+      method: 'DELETE',
+    });
+    const updatedTodos = todos.filter((todo: TodosDto) => todo.id !== selectedTodoId);
     setTodos(updatedTodos);
 
     handleClickCloseBottomSheet();
@@ -146,7 +148,7 @@ export default function Page() {
       <div className="flex h-full flex-col justify-center">
         <div className="px-8 py-4">
           <fieldset className="space-y-3">
-            {todos.map((todo: TodosDtoHttp) => (
+            {todos.map((todo: TodosDto) => (
               <TodoItem
                 key={todo.id}
                 todo={todo}

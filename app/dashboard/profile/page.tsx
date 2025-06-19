@@ -6,23 +6,17 @@ import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
 
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
-import { AuthRepository } from '@/app/core/auth.repository';
-import { AuthRepositoryHttp } from '@/app/data/auth/auth.repository.http';
-import { UsersRepository } from '@/app/core/repositores/users.repository';
-import { UsersRepositoryHttp } from '@/app/data/users/users.repository.http';
-import { UserProfileDtoHttp } from '@/app/data/users/user.dto.http';
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
+import { safeFetchJson } from '@/lib/http/safe-json';
+import { UserProfileDto } from '@/src/dtos/users.dto';
 
 const topbarConfig: TopbarConfig = {
   center: 'Profile',
 };
 
-const authRepository: AuthRepository = AuthRepositoryHttp();
-const usersRepository: UsersRepository = UsersRepositoryHttp();
-
 export default function Page() {
   const [isProfileLoading, setIsProfileLoading] = useState<boolean>(true);
-  const [userProfile, setUserProfile] = useState<UserProfileDtoHttp>();
+  const [userProfile, setUserProfile] = useState<UserProfileDto>();
   const [isLogoutLoading, setIsLogoutLoading] = useState<boolean>(false);
   const router = useRouter();
 
@@ -32,25 +26,31 @@ export default function Page() {
 
   const fetchProfile = async () => {
     setIsProfileLoading(true);
-    try {
-      const res = await usersRepository.getProfile();
-      setUserProfile(res);
+    const fetchJsonResult = await safeFetchJson<UserProfileDto>(`/api/profile`, {
+      method: 'GET',
+    });
+
+    if (!fetchJsonResult.ok) {
       setIsProfileLoading(false);
-    } catch (error) {
-      console.log('fetchProfile error: ', error);
-      setIsProfileLoading(false);
+      return;
     }
+
+    setUserProfile(fetchJsonResult.body);
+    setIsProfileLoading(false);
   };
 
   const logout = async () => {
     setIsLogoutLoading(true);
-    try {
-      await authRepository.logout();
+    const res = await safeFetchJson<void>('/api/logout', {
+      method: 'POST',
+    });
+    if (!res.ok) {
       setIsLogoutLoading(false);
-      router.push('/login');
-    } catch (error) {
-      setIsLogoutLoading(false);
+      return;
     }
+
+    setIsLogoutLoading(false);
+    router.push('/login');
   };
 
   const handleClickLogout = () => {

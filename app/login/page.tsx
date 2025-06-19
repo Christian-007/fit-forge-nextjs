@@ -11,8 +11,6 @@ import { LoginFormInputs, loginSchema } from './login.schema';
 import { useLogin } from './hooks/login.hooks';
 
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
-import { AuthRepository } from '@/app/core/auth.repository';
-import { AuthRepositoryHttp } from '@/app/data/auth/auth.repository.http';
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
 
@@ -25,8 +23,6 @@ const topbarConfig: TopbarConfig = {
   center: 'Login',
 };
 
-const authRepository: AuthRepository = AuthRepositoryHttp();
-
 export default function Page() {
   const {
     register,
@@ -36,15 +32,15 @@ export default function Page() {
     resolver: zodResolver(loginSchema),
     mode: 'onChange',
   });
-  const [submitError, setSubmitError] = useState<Error | null>();
-  const { loading, login } = useLogin(authRepository);
+  const [submitError, setSubmitError] = useState<string | null>();
+  const { loading, login } = useLogin();
   const router = useRouter();
 
   async function onSubmit(data: LoginFormInputs): Promise<void> {
     setSubmitError(null);
-    const [_, error] = await login({ username: data.email, password: data.password });
-    if (error) {
-      setSubmitError(error);
+    const res = await login({ username: data.email, password: data.password });
+    if (res.error) {
+      setSubmitError(res.error);
       return;
     }
 

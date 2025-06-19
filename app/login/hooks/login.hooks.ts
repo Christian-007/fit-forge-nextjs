@@ -2,28 +2,31 @@
 
 import { useState } from 'react';
 
-import { AuthRepository } from '@/app/core/auth.repository';
-import { AuthEntity } from '@/app/core/auth.entity';
-import { Result } from '@/app/shared/http/http';
+import { LoginDto, LoginResponseDto } from '@/src/dtos/auth.dto';
+import { safeFetchJson } from '@/lib/http/safe-json';
+import { HttpResponse } from '@/lib/http/http-client';
 
 type LoginState = {
   loading: boolean;
 };
 
-export const useLogin = (authRepository: AuthRepository) => {
+export const useLogin = () => {
   const [state, setState] = useState<LoginState>({ loading: false });
 
-  async function login(data: AuthEntity): Promise<Result<null>> {
+  async function login(data: LoginDto): Promise<HttpResponse<LoginResponseDto>> {
     setState({ loading: true });
 
-    try {
-      await authRepository.login(data);
+    const fetchJsonResult = await safeFetchJson<LoginResponseDto>('/api/login', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (!fetchJsonResult.ok) {
       setState({ loading: false });
-      return [null, null];
-    } catch (err: any) {
-      setState({ loading: false });
-      return [null, err];
+      return fetchJsonResult;
     }
+
+    setState({ loading: false });
+    return fetchJsonResult;
   }
 
   return { ...state, login };

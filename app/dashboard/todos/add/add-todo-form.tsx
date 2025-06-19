@@ -7,10 +7,8 @@ import { useForm } from 'react-hook-form';
 
 import { AddTodoFormInputs, addTodoSchema } from './add-todo-schema';
 
-import { TodosRepository } from '@/app/core/repositores/todos.repository';
-import { TodosRepositoryHttp } from '@/app/data/todos/todos.repository.http';
-
-const todoRepository: TodosRepository = TodosRepositoryHttp();
+import { CreateTodoResponseDto } from '@/src/dtos/todo.dto';
+import { safeFetchJson } from '@/lib/http/safe-json';
 
 export function AddTodoForm() {
   const {
@@ -29,17 +27,18 @@ export function AddTodoForm() {
     setIsLoading(true);
     setSubmitError(false);
 
-    try {
-      await todoRepository.createOne({
-        title: formData.title,
-      });
-      setIsLoading(false);
-      setSubmitError(false);
-      router.push('/todos');
-    } catch (error) {
+    const fetchJsonResult = await safeFetchJson<CreateTodoResponseDto>('/api/todos', {
+      method: 'POST',
+      body: JSON.stringify({ title: formData.title }),
+    });
+    if (!fetchJsonResult.ok) {
       setIsLoading(false);
       setSubmitError(true);
     }
+
+    setIsLoading(false);
+    setSubmitError(false);
+    router.push('/todos');
   };
 
   return (

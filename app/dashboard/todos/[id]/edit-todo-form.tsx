@@ -7,14 +7,12 @@ import { useRouter } from 'next/navigation';
 
 import { EditTodoFormInputs, editTodoSchema } from './edit-todo.schema';
 
-import { TodosRepository } from '@/app/core/repositores/todos.repository';
-import { TodosRepositoryHttp } from '@/app/data/todos/todos.repository.http';
+import { safeFetchJson } from '@/lib/http/safe-json';
+import { TodosDto, UpdateTodoDto } from '@/src/dtos/todo.dto';
 
 type EditTodoFormProps = {
   todoId: number;
 };
-
-const todoRepository: TodosRepository = TodosRepositoryHttp();
 
 export default function EditTodoForm({ todoId }: EditTodoFormProps) {
   const {
@@ -35,9 +33,15 @@ export default function EditTodoForm({ todoId }: EditTodoFormProps) {
   }, []);
 
   const fetchTodo = async () => {
-    const { success, status, data, message } = await todoRepository.findOne(todoId);
-    if (success && data) {
-      reset({ title: data.title });
+    const fetchJsonResult = await safeFetchJson<TodosDto>(`/api/todos/${todoId}`, {
+      method: 'GET',
+    });
+
+    console.log('fetchJsonResult: ', fetchJsonResult);
+
+    if (fetchJsonResult.ok && fetchJsonResult.body) {
+      reset({ title: fetchJsonResult.body.title });
+      return;
     }
   };
 
@@ -45,18 +49,23 @@ export default function EditTodoForm({ todoId }: EditTodoFormProps) {
     setIsLoading(true);
     setSubmitError(false);
 
-    try {
-      await todoRepository.updateOne({
-        id: todoId,
-        title: formData.title,
-      });
-      setIsLoading(false);
-      setSubmitError(false);
-      router.push('/todos');
-    } catch (error) {
+    const dto: UpdateTodoDto = {
+      id: todoId,
+      title: formData.title,
+    };
+    const fetchJsonResult = await safeFetchJson<void>(`/api/todos/${todoId}`, {
+      method: 'PATCH',
+      body: JSON.stringify(dto),
+    });
+    if (!fetchJsonResult.ok) {
       setIsLoading(false);
       setSubmitError(true);
+      return;
     }
+
+    setIsLoading(false);
+    setSubmitError(false);
+    router.push('/todos');
   };
   return (
     <>

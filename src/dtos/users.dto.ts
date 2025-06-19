@@ -1,10 +1,10 @@
-export interface CreateUserDtoHttp {
+export interface CreateUserDto {
   name: string;
   email: string;
   password: string;
 }
 
-export interface UserProfileDtoHttp {
+export interface UserProfileDto {
   userId: number;
   name: string;
   email: string;

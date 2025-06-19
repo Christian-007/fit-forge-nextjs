@@ -13,8 +13,6 @@ import { useUsers } from './hooks/sign-up.hooks';
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
-import { UsersRepository } from '@/app/core/repositores/users.repository';
-import { UsersRepositoryHttp } from '@/app/data/users/users.repository.http';
 
 const topbarConfig: TopbarConfig = {
   left: (
@@ -25,8 +23,6 @@ const topbarConfig: TopbarConfig = {
   center: 'Create an Account',
 };
 
-const usersRepository: UsersRepository = UsersRepositoryHttp();
-
 export default function Page() {
   const {
     register,
@@ -36,18 +32,18 @@ export default function Page() {
     resolver: zodResolver(signUpSchema),
     mode: 'onChange',
   });
-  const { loading, createOneUser } = useUsers(usersRepository);
+  const { loading, createOneUser } = useUsers();
   const [submitError, setSubmitError] = useState<boolean>(false);
   const router = useRouter();
 
   async function onSubmit(formData: SignUpFormInputs): Promise<void> {
     setSubmitError(false);
-    const [_, error] = await createOneUser({
+
+    const error = await createOneUser({
       name: formData.fullName,
       email: formData.email,
       password: formData.password,
     });
-
     if (error) {
       setSubmitError(true);
       return;
