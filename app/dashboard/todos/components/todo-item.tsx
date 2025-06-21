@@ -1,8 +1,8 @@
 import { EllipsisVerticalIcon } from '@heroicons/react/24/solid';
-import { TodosDtoHttp } from '@/app/data/todos/todos.dto.http';
+import { TodosDto } from '@/src/dtos/todo.dto';
 
 type TodoItemProps = {
-  todo: TodosDtoHttp;
+  todo: TodosDto;
   handleOnChangeFn: (event: React.ChangeEvent<HTMLInputElement>, todoId: number) => void;
   handleOnClickOptionFn: (todoId: number) => void;
 };
