@@ -5,23 +5,25 @@ import {
   QuestionMarkCircleIcon,
   UserPlusIcon,
 } from '@heroicons/react/24/solid';
+import { PointType } from '@/src/dtos/point.dto';
 
 type PointHistoryCardProps = {
-  id: number;
   title: PointType;
   subtitle: string;
   points: number;
 };
 
-export enum PointType {
-  TodoCompleted = 'complete todo',
-  TodoCreated = 'created a todo',
-  UserRegistration = 'user registration',
-  SubscriptionDeduction = 'subscription deduction',
-}
-
 export function PointHistoryCard({ title, subtitle, points }: PointHistoryCardProps) {
-  const capitalize = (title: PointType) => title.charAt(0).toUpperCase() + title.slice(1);
+  const capitalize = (title?: string) => {
+    if (!title) return;
+    return title.charAt(0).toUpperCase() + title.slice(1);
+  };
+
+  const formatSubtitle = (subtitle?: string) => {
+    if (!subtitle) return;
+    const format = subtitle.split('_').join(' ');
+    return capitalize(format);
+  };
 
   const renderIcon = (title: PointType) => {
     if (title === PointType.TodoCompleted) {
@@ -41,14 +43,14 @@ export function PointHistoryCard({ title, subtitle, points }: PointHistoryCardPr
 
   return (
     <>
-      <div className="flex items-center justify-between gap-4 px-5">
+      <div className="flex items-center justify-between gap-4">
         <div className="flex items-center justify-center gap-4">
           <div className="flex size-12 items-center justify-center rounded-lg bg-[#264533]">
             {renderIcon(title)}
           </div>
           <div className="flex flex-col">
             <p className="font-medium">{capitalize(title)}</p>
-            <p className="text-sm text-[#96c5a8]">{subtitle}</p>
+            <p className="text-sm text-[#96c5a8]">{formatSubtitle(subtitle)}</p>
           </div>
         </div>
         <div className="shrink-0">

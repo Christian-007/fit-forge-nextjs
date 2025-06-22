@@ -3,6 +3,7 @@ type HttpMethod = 'GET' | 'POST' | 'PATCH' | 'DELETE' | 'PUT';
 export type HttpOptions = {
   headers?: Record<string, string>;
   body?: unknown;
+  params?: Record<string, string>;
 };
 
 export type HttpResponse<T> = {
@@ -20,7 +21,8 @@ export function createHttpClient() {
     options: HttpOptions = {}
   ): Promise<HttpResponse<T>> {
     try {
-      const res = await fetch(`${url}`, {
+      const urlWithQueryParams = constructUrlWithQueryParams(url, options.params);
+      const res = await fetch(urlWithQueryParams, {
         method,
         ...(options?.headers && { headers: options.headers }),
         ...(options?.body ? { body: JSON.stringify(options.body) } : {}),
@@ -56,6 +58,17 @@ export function createHttpClient() {
         error: err instanceof Error ? err.message : 'Unexpected error happened',
       };
     }
+  }
+
+  function constructUrlWithQueryParams(url: string, params?: Record<string, string>) {
+    let result = url;
+
+    if (params && Object.keys(params).length > 0) {
+      const urlSearchParams = new URLSearchParams(params);
+      result += '?' + urlSearchParams.toString();
+    }
+
+    return result;
   }
 
   async function getResponseBody(res: Response): Promise<any | undefined> {
