@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/login'],
+  matcher: ['/dashboard/:path*', '/login', '/todos/:path*', '/profile'],
 };
+
+const PROTECTED_ROUTES = ['/todos', '/profile'];
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
@@ -13,7 +15,9 @@ export function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/todos', request.url));
   }
 
-  const isProtectedRoute = currentPage.startsWith('/dashboard');
+  const isProtectedRoute =
+    currentPage.startsWith('/dashboard') ||
+    PROTECTED_ROUTES.some((prefix) => currentPage.startsWith(prefix));
   if (isProtectedRoute && !token) {
     return NextResponse.redirect(new URL('/login', request.url));
   }
