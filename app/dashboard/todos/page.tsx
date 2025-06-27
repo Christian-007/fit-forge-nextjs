@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { PencilSquareIcon, PlusCircleIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import debounce from 'lodash.debounce';
 import clsx from 'clsx';
+import toast from 'react-hot-toast';
 
 import { TodoItem } from './components/todo-item';
 
@@ -16,6 +17,10 @@ import { LoadingIndicator } from '@/app/login/components/loading/loading';
 import { safeFetchJson } from '@/lib/http/safe-json';
 import { CollectionHttp } from '@/src/dtos/todo.dto.http';
 import { TodosDto, UpdateTodoDto } from '@/src/dtos/todo.dto';
+
+type RewardsSseResponse = {
+  points: number;
+};
 
 const topbarConfig: TopbarConfig = {
   center: 'My Todos',
@@ -50,6 +55,27 @@ export default function Page() {
 
   useEffect(() => {
     fetchAllTodos();
+
+    const evtSource = new EventSource('http://localhost:4001/sse/rewards', {
+      withCredentials: true,
+    });
+
+    evtSource.addEventListener('rewards', (eventStream) => {
+      const data: RewardsSseResponse = JSON.parse(eventStream.data);
+
+      toast(`You've been rewarded ${data.points} points!`, {
+        icon: '🎉',
+        style: {
+          borderRadius: '10px',
+          background: '#333',
+          color: '#fff',
+        },
+      });
+    });
+
+    return () => {
+      evtSource.close();
+    };
   }, []);
 
   const debouncedUpdate = useMemo(() => {
