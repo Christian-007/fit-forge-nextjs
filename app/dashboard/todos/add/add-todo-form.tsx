@@ -1,14 +1,12 @@
 'use client';
 
-import { useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 
 import { AddTodoFormInputs, addTodoSchema } from './add-todo-schema';
 
-import { CreateTodoResponseDto } from '@/src/dtos/todo.dto';
-import { safeFetchJson } from '@/lib/http/safe-json';
+import { useCreateOneTodo } from '@/lib/query-hooks/todos';
 
 export function AddTodoForm() {
   const {
@@ -19,26 +17,14 @@ export function AddTodoForm() {
     resolver: zodResolver(addTodoSchema),
     mode: 'onChange',
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [submitError, setSubmitError] = useState<boolean>(false);
+  const createTodoMutation = useCreateOneTodo();
   const router = useRouter();
 
   const onSubmit = async (formData: AddTodoFormInputs) => {
-    setIsLoading(true);
-    setSubmitError(false);
-
-    const fetchJsonResult = await safeFetchJson<CreateTodoResponseDto>('/api/todos', {
-      method: 'POST',
-      body: JSON.stringify({ title: formData.title }),
-    });
-    if (!fetchJsonResult.ok) {
-      setIsLoading(false);
-      setSubmitError(true);
-    }
-
-    setIsLoading(false);
-    setSubmitError(false);
-    router.push('/todos');
+    createTodoMutation.mutate(
+      { title: formData.title },
+      { onSuccess: () => router.push('/todos') }
+    );
   };
 
   return (
@@ -56,10 +42,11 @@ export function AddTodoForm() {
         {errors.title && <p className="mt-1 h-4 text-sm text-red-500">{errors.title?.message}</p>}
       </div>
       <button
+        disabled={createTodoMutation.isPending}
         type="submit"
         className="mt-8 block w-full rounded-full bg-[#38E078] p-4 text-center text-[16px] font-bold text-[#122117] hover:opacity-70"
       >
-        Create Todo
+        {createTodoMutation.isPending ? 'Adding todo...' : 'Create Todo'}
       </button>
     </form>
   );

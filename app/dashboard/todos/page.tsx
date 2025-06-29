@@ -14,9 +14,8 @@ import { TodoItem } from './components/todo-item';
 import { TopbarConfig } from '@/app/shared/components';
 import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
 import { LoadingIndicator } from '@/app/login/components/loading/loading';
-import { safeFetchJson } from '@/lib/http/safe-json';
-import { CollectionHttp } from '@/src/dtos/todo.dto.http';
 import { TodosDto, UpdateTodoDto } from '@/src/dtos/todo.dto';
+import { useDeleteOneTodo, useTodos, useUpdateOneTodo } from '@/lib/query-hooks/todos';
 
 type RewardsSseResponse = {
   points: number;
@@ -32,30 +31,14 @@ const topbarConfig: TopbarConfig = {
 };
 
 export default function Page() {
-  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectedTodoId, setSelectedTodoId] = useState<number>(-1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
-  const [todos, setTodos] = useState<TodosDto[]>([]);
+  const { data: todos = [], isLoading } = useTodos();
+  const deleteTodoMutation = useDeleteOneTodo();
+  const updateTodoMutation = useUpdateOneTodo();
   const router = useRouter();
 
-  const fetchAllTodos = async () => {
-    setIsLoading(true);
-    const fetchJsonResult = await safeFetchJson<CollectionHttp<TodosDto>>(`/api/todos`, {
-      method: 'GET',
-    });
-
-    if (!fetchJsonResult.ok) {
-      setIsLoading(false);
-      return;
-    }
-
-    setTodos((fetchJsonResult.body as CollectionHttp<TodosDto>).results);
-    setIsLoading(false);
-  };
-
   useEffect(() => {
-    fetchAllTodos();
-
     const evtSource = new EventSource('http://localhost:4001/sse/rewards', {
       withCredentials: true,
     });
@@ -85,26 +68,15 @@ export default function Page() {
   }, []);
 
   const updateTodoStatus = async (todoId: number, isCompleted: boolean) => {
-    const dto: UpdateTodoDto = {
+    const updateTodo: UpdateTodoDto = {
       id: todoId,
       isCompleted,
     };
-    safeFetchJson<void>(`/api/todos/${todoId}`, {
-      method: 'PATCH',
-      body: JSON.stringify(dto),
-    });
+    updateTodoMutation.mutate(updateTodo);
   };
 
   const handleOnChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>, todoId: number) => {
     const checkedValue = event.target.checked;
-    const updatedTodos = todos.map((todo) => {
-      if (todo.id === todoId) {
-        return { ...todo, isCompleted: checkedValue };
-      }
-      return todo;
-    });
-
-    setTodos(updatedTodos);
     debouncedUpdate(todoId, checkedValue);
   };
 
@@ -123,12 +95,7 @@ export default function Page() {
   };
 
   const handleOnClickDeleteTodo = async () => {
-    safeFetchJson<void>(`/api/todos/${selectedTodoId}`, {
-      method: 'DELETE',
-    });
-    const updatedTodos = todos.filter((todo: TodosDto) => todo.id !== selectedTodoId);
-    setTodos(updatedTodos);
-
+    deleteTodoMutation.mutate(selectedTodoId);
     handleClickCloseBottomSheet();
   };
 

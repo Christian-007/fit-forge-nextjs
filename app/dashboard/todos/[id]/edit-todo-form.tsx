@@ -2,13 +2,13 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
 import { EditTodoFormInputs, editTodoSchema } from './edit-todo.schema';
 
-import { safeFetchJson } from '@/lib/http/safe-json';
-import { TodosDto, UpdateTodoDto } from '@/src/dtos/todo.dto';
+import { UpdateTodoDto } from '@/src/dtos/todo.dto';
+import { useOneTodo, useUpdateOneTodo } from '@/lib/query-hooks/todos';
 
 type EditTodoFormProps = {
   todoId: number;
@@ -24,48 +24,22 @@ export default function EditTodoForm({ todoId }: EditTodoFormProps) {
     resolver: zodResolver(editTodoSchema),
     mode: 'onChange',
   });
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [submitError, setSubmitError] = useState<boolean>(false);
+  const { isLoading, data } = useOneTodo(todoId);
+  const updateTodoMutation = useUpdateOneTodo();
   const router = useRouter();
 
   useEffect(() => {
-    fetchTodo();
-  }, []);
-
-  const fetchTodo = async () => {
-    const fetchJsonResult = await safeFetchJson<TodosDto>(`/api/todos/${todoId}`, {
-      method: 'GET',
-    });
-
-    console.log('fetchJsonResult: ', fetchJsonResult);
-
-    if (fetchJsonResult.ok && fetchJsonResult.body) {
-      reset({ title: fetchJsonResult.body.title });
-      return;
+    if (data) {
+      reset({ title: data.title });
     }
-  };
+  }, [data, reset]);
 
   const onSubmit = async (formData: EditTodoFormInputs) => {
-    setIsLoading(true);
-    setSubmitError(false);
-
-    const dto: UpdateTodoDto = {
+    const updateTodoDto: UpdateTodoDto = {
       id: todoId,
       title: formData.title,
     };
-    const fetchJsonResult = await safeFetchJson<void>(`/api/todos/${todoId}`, {
-      method: 'PATCH',
-      body: JSON.stringify(dto),
-    });
-    if (!fetchJsonResult.ok) {
-      setIsLoading(false);
-      setSubmitError(true);
-      return;
-    }
-
-    setIsLoading(false);
-    setSubmitError(false);
-    router.push('/todos');
+    updateTodoMutation.mutate(updateTodoDto, { onSuccess: () => router.push('/todos') });
   };
   return (
     <>
@@ -83,10 +57,11 @@ export default function EditTodoForm({ todoId }: EditTodoFormProps) {
           {errors.title && <p className="mt-1 h-4 text-sm text-red-500">{errors.title?.message}</p>}
         </div>
         <button
+          disabled={updateTodoMutation.isPending}
           type="submit"
           className="mt-8 block w-full rounded-full bg-[#38E078] p-4 text-center text-[16px] font-bold text-[#122117] hover:opacity-70"
         >
-          Submit
+          {updateTodoMutation.isPending ? 'Editing todo...' : 'Submit'}
         </button>
       </form>
     </>
