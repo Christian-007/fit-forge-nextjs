@@ -6,7 +6,7 @@ import { HttpOptions, HttpResponse, createHttpClient } from '@/lib/http/http-cli
 const httpClient = createHttpClient();
 
 export function TodosRepositoryHttp(): TodosRepository {
-  const baseUrl: string | undefined = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const baseUrl: string | undefined = process.env.CORE_API_URL;
   if (!baseUrl) {
     throw new Error('baseUrl is not defined!');
   }

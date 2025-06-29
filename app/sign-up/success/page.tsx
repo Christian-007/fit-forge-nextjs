@@ -25,8 +25,8 @@ export default function Page() {
         <div className="px-4">
           <h1 className="text-center text-[28px] font-bold">Registration Successful!</h1>
           <p className="mt-3 text-center">
-            We've sent a verification link to your email. Please check your inbox and follow the
-            instructions to activate your account.
+            We&quot;ve sent a verification link to your email. Please check your inbox and follow
+            the instructions to activate your account.
           </p>
           <Link
             href="/"

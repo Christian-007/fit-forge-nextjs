@@ -20,6 +20,7 @@ export function createAuthHandler(options: AuthHandlerOptions) {
     const res = await authRepository.login(jsonParseResult.body as LoginDto, {
       headers: {
         'Content-Type': 'application/json',
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {
@@ -28,7 +29,7 @@ export function createAuthHandler(options: AuthHandlerOptions) {
 
     cookies().set('token', (res.body as LoginResponseDto).accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: process.env.ENV === 'production',
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24, // 1 day

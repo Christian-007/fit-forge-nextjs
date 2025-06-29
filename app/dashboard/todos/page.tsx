@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -31,6 +31,7 @@ const topbarConfig: TopbarConfig = {
 };
 
 export default function Page() {
+  const baseUrl = process.env.NEXT_PUBLIC_NOTIFICATION_API_URL;
   const [selectedTodoId, setSelectedTodoId] = useState<number>(-1);
   const [isBottomSheetOpen, setIsBottomSheetOpen] = useState<boolean>(false);
   const { data: todos = [], isLoading } = useTodos();
@@ -39,7 +40,7 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    const evtSource = new EventSource('http://localhost:4001/sse/rewards', {
+    const evtSource = new EventSource(`${baseUrl}/sse/rewards`, {
       withCredentials: true,
     });
 
@@ -59,21 +60,24 @@ export default function Page() {
     return () => {
       evtSource.close();
     };
-  }, []);
+  }, [baseUrl]);
+
+  const updateTodoStatus = useCallback(
+    (todoId: number, isCompleted: boolean) => {
+      const updateTodo: UpdateTodoDto = {
+        id: todoId,
+        isCompleted,
+      };
+      updateTodoMutation.mutate(updateTodo);
+    },
+    [updateTodoMutation]
+  );
 
   const debouncedUpdate = useMemo(() => {
     return debounce((todoId: number, isCompleted: boolean) => {
       updateTodoStatus(todoId, isCompleted);
     }, 300);
-  }, []);
-
-  const updateTodoStatus = async (todoId: number, isCompleted: boolean) => {
-    const updateTodo: UpdateTodoDto = {
-      id: todoId,
-      isCompleted,
-    };
-    updateTodoMutation.mutate(updateTodo);
-  };
+  }, [updateTodoStatus]);
 
   const handleOnChangeCheckbox = (event: React.ChangeEvent<HTMLInputElement>, todoId: number) => {
     const checkedValue = event.target.checked;

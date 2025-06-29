@@ -5,7 +5,7 @@ import { HttpOptions, HttpResponse, createHttpClient } from '@/lib/http/http-cli
 const httpClient = createHttpClient();
 
 export function AuthRepositoryHttp(): AuthRepository {
-  const baseUrl: string | undefined = process.env.NEXT_PUBLIC_BASE_API_URL;
+  const baseUrl: string | undefined = process.env.CORE_API_URL;
   if (!baseUrl) {
     throw new Error('baseUrl is not defined!');
   }
@@ -14,9 +14,6 @@ export function AuthRepositoryHttp(): AuthRepository {
     data: LoginDto,
     options?: HttpOptions
   ): Promise<HttpResponse<LoginResponseDto>> {
-    console.log('body: ', data);
-    console.log('[AuthRepositoryHttp] options: ', options);
-    console.log('payload: ', { ...options, body: data });
     return await httpClient.post(`${baseUrl}/auth/login`, data, options);
   }
 

@@ -27,5 +27,5 @@ export const useEmailVerification = (token: string | null): void => {
     };
 
     verify();
-  }, [token]);
+  }, [token, router]);
 };
