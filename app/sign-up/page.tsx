@@ -8,11 +8,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ArrowLongLeftIcon, XCircleIcon } from '@heroicons/react/24/solid';
 
 import { SignUpFormInputs, signUpSchema } from './sign-up.schema';
-import { useUsers } from './hooks/sign-up.hooks';
+import { useUsers } from './_hooks/sign-up.hooks';
 
-import { TopbarConfig } from '@/app/shared/components';
-import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
-import { LoadingIndicator } from '@/app/login/components/loading/loading';
+import { TopbarConfig } from '@/app/_shared/components';
+import { TopbarConfigSetter } from '@/app/_shared/components/topbar/topbar-config-setter';
+import { LoadingIndicator } from '@/app/login/_components/loading/loading';
 
 const topbarConfig: TopbarConfig = {
   left: (

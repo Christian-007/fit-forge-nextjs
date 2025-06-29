@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
 
-import { TopbarConfig } from '@/app/shared/components';
-import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
-import { LoadingIndicator } from '@/app/login/components/loading/loading';
+import { TopbarConfig } from '@/app/_shared/components';
+import { TopbarConfigSetter } from '@/app/_shared/components/topbar/topbar-config-setter';
+import { LoadingIndicator } from '@/app/login/_components/loading/loading';
 import { safeFetchJson } from '@/lib/http/safe-json';
 import { UserProfileDto } from '@/src/dtos/users.dto';
 

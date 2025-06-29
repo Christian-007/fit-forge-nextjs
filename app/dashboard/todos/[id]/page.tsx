@@ -3,8 +3,8 @@ import { XMarkIcon } from '@heroicons/react/24/solid';
 
 import EditTodoForm from './edit-todo-form';
 
-import { TopbarConfig } from '@/app/shared/components';
-import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
+import { TopbarConfig } from '@/app/_shared/components';
+import { TopbarConfigSetter } from '@/app/_shared/components/topbar/topbar-config-setter';
 
 const topbarConfig: TopbarConfig = {
   left: (

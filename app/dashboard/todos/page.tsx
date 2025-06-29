@@ -9,11 +9,11 @@ import debounce from 'lodash.debounce';
 import clsx from 'clsx';
 import toast from 'react-hot-toast';
 
-import { TodoItem } from './components/todo-item';
+import { TodoItem } from './_components/todo-item';
 
-import { TopbarConfig } from '@/app/shared/components';
-import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
-import { LoadingIndicator } from '@/app/login/components/loading/loading';
+import { TopbarConfig } from '@/app/_shared/components';
+import { TopbarConfigSetter } from '@/app/_shared/components/topbar/topbar-config-setter';
+import { LoadingIndicator } from '@/app/login/_components/loading/loading';
 import { TodosDto, UpdateTodoDto } from '@/src/dtos/todo.dto';
 import { useDeleteOneTodo, useTodos, useUpdateOneTodo } from '@/lib/query-hooks/todos';
 

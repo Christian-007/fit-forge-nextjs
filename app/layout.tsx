@@ -6,8 +6,8 @@ import clsx from 'clsx';
 import './globals.css';
 import Providers from './providers';
 
-import { TopbarProvider } from '@/app/shared/components/topbar/topbar.context';
-import { Topbar } from '@/app/shared/components';
+import { TopbarProvider } from '@/app/_shared/components/topbar/topbar.context';
+import { Topbar } from '@/app/_shared/components';
 
 const figtree = Figtree({
   subsets: ['latin'],

@@ -2,13 +2,11 @@
 
 import { useSearchParams } from 'next/navigation';
 
-import { useEmailVerification } from './hooks/email-verification.hooks';
+import { useEmailVerification } from './_hooks/email-verification.hooks';
 
-import { LoadingIndicator } from '@/app/login/components/loading/loading';
-import { TopbarConfig } from '@/app/shared/components';
-import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
-import { AuthRepository } from '@/app/core/auth.repository';
-import { AuthRepositoryHttp } from '@/app/data/auth/auth.repository.http';
+import { LoadingIndicator } from '@/app/login/_components/loading/loading';
+import { TopbarConfig } from '@/app/_shared/components';
+import { TopbarConfigSetter } from '@/app/_shared/components/topbar/topbar-config-setter';
 
 const topbarConfig: TopbarConfig = {
   center: 'Fit Forge',

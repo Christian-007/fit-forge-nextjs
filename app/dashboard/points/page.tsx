@@ -3,9 +3,9 @@
 import { useEffect, useState } from 'react';
 import { PointHistoryCard } from './_components/point-history-card';
 
-import { LoadingIndicator } from '@/app/login/components/loading/loading';
-import { TopbarConfig } from '@/app/shared/components';
-import { TopbarConfigSetter } from '@/app/shared/components/topbar/topbar-config-setter';
+import { LoadingIndicator } from '@/app/login/_components/loading/loading';
+import { TopbarConfig } from '@/app/_shared/components';
+import { TopbarConfigSetter } from '@/app/_shared/components/topbar/topbar-config-setter';
 import { PointTransactionEntity } from '@/src/entities/point.entity';
 import { Pagination } from '@/src/dtos/point.dto';
 import { safeFetchJson } from '@/lib/http/safe-json';
