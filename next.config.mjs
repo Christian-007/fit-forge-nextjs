@@ -18,6 +18,7 @@ const nextConfig = {
       { source: '/profile', destination: '/dashboard/profile' },
     ];
   },
+  output: 'standalone',
 };
 
 export default nextConfig;
