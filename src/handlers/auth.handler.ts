@@ -42,6 +42,7 @@ export function createAuthHandler(options: AuthHandlerOptions) {
     const res = await authRepository.logout({
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {

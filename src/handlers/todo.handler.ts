@@ -16,6 +16,7 @@ export function createTodoHandler(options: TodoHandlerOptions) {
     const res = await todoRepository.findAll({
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {
@@ -30,6 +31,7 @@ export function createTodoHandler(options: TodoHandlerOptions) {
     const res = await todoRepository.findOne(id, {
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {
@@ -49,6 +51,7 @@ export function createTodoHandler(options: TodoHandlerOptions) {
     const res = await todoRepository.createOne(jsonParseResult.body as CreateTodoDto, {
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {
@@ -72,6 +75,7 @@ export function createTodoHandler(options: TodoHandlerOptions) {
     const res = await todoRepository.updateOne(reqBody, {
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {
@@ -86,6 +90,7 @@ export function createTodoHandler(options: TodoHandlerOptions) {
     const res = await todoRepository.deleteOne(id, {
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {

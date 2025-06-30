@@ -13,7 +13,6 @@ export function createPointHandler(options: PointHandlerOptions) {
 
   async function getPointHistoryWithPagination(request: NextRequest) {
     const { searchParams } = request.nextUrl;
-    console.log('searchparams: ', searchParams);
     const queryParams: FindAllPointHistoryQueryParams = {
       limit: searchParams.get('limit') as string,
       offset: searchParams.get('offset') as string,
@@ -23,10 +22,10 @@ export function createPointHandler(options: PointHandlerOptions) {
     const res = await pointHistoryRepository.findAllWithPagination(queryParams, {
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {
-      console.log('NOT OK: ', res);
       return Response.json({ error: res.error }, { status: res.status });
     }
 

@@ -20,6 +20,7 @@ export function createUsersHandler(options: UsersHandlerOptions) {
     const res = await usersRepository.create(jsonParseResult.body as CreateUserDto, {
       headers: {
         'Content-Type': 'application/json',
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {
@@ -34,6 +35,7 @@ export function createUsersHandler(options: UsersHandlerOptions) {
     const res = await usersRepository.getProfile({
       headers: {
         Authorization: `Bearer ${token}`,
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
       },
     });
     if (!res.ok) {
