@@ -4,6 +4,7 @@ import { Toaster } from 'react-hot-toast';
 import clsx from 'clsx';
 
 import './globals.css';
+import { Dialog } from './dialog';
 import Providers from './providers';
 
 import { TopbarProvider } from '@/app/_shared/components/topbar/topbar.context';
@@ -40,6 +41,7 @@ export default function RootLayout({
           </div>
         </Providers>
         <Toaster position="bottom-center" />
+        <Dialog />
       </body>
     </html>
   );
