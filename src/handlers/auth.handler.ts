@@ -8,6 +8,10 @@ export type AuthHandlerOptions = {
   authRepository: AuthRepository;
 };
 
+const COOKIE_NAME = {
+  Token: 'token',
+};
+
 export function createAuthHandler(options: AuthHandlerOptions) {
   const { authRepository } = options;
 
@@ -28,7 +32,7 @@ export function createAuthHandler(options: AuthHandlerOptions) {
     }
 
     const isProd = process.env.ENV === 'production';
-    cookies().set('token', (res.body as LoginResponseDto).accessToken, {
+    cookies().set(COOKIE_NAME.Token, (res.body as LoginResponseDto).accessToken, {
       httpOnly: true,
       secure: isProd,
       sameSite: 'lax',
@@ -51,7 +55,15 @@ export function createAuthHandler(options: AuthHandlerOptions) {
       return Response.json({ error: res.error }, { status: res.status });
     }
 
-    cookies().delete('token');
+    const isProd = process.env.ENV === 'production';
+    cookies().delete({
+      name: COOKIE_NAME.Token,
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+      ...(isProd && { domain: process.env.COOKIE_DOMAIN }),
+    });
     return Response.json(res.body, { status: res.status });
   }
 
