@@ -25,7 +25,7 @@ export function AuthRepositoryHttp(): AuthRepository {
     token: string,
     options?: HttpOptions
   ): Promise<HttpResponse<AuthVerifyDto>> {
-    return await httpClient.post(`${baseUrl}/auth/verify/${token}`, options);
+    return await httpClient.post(`${baseUrl}/auth/verify/${token}`, null, options);
   }
 
   return {

@@ -27,12 +27,14 @@ export function createAuthHandler(options: AuthHandlerOptions) {
       return Response.json({ error: res.error }, { status: res.status });
     }
 
+    const isProd = process.env.ENV === 'production';
     cookies().set('token', (res.body as LoginResponseDto).accessToken, {
       httpOnly: true,
-      secure: process.env.ENV === 'production',
+      secure: isProd,
       sameSite: 'lax',
       path: '/',
       maxAge: 60 * 60 * 24, // 1 day
+      ...(isProd && { domain: process.env.COOKIE_DOMAIN }),
     });
     return Response.json(res.body, { status: res.status });
   }
@@ -54,7 +56,11 @@ export function createAuthHandler(options: AuthHandlerOptions) {
   }
 
   async function postVerify(emailVerificationToken: string) {
-    const res = await authRepository.verify(emailVerificationToken);
+    const res = await authRepository.verify(emailVerificationToken, {
+      headers: {
+        ...(process.env.ENV === 'production' ? { 'x-api-key': process.env.API_GATEWAY_KEY } : {}),
+      },
+    });
     if (!res.ok) {
       return Response.json({ error: res.error }, { status: res.status });
     }
