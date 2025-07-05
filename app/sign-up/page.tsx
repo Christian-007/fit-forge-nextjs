@@ -86,7 +86,7 @@ export default function Page() {
               <input
                 type="email"
                 id="email"
-                placeholder="your-email@example.com"
+                placeholder="your-dummy-email@example.com"
                 className="w-full rounded-md bg-[#2645] px-4 py-3 text-[#96C4A8] ring-1 ring-[#2645] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-[#38E078]"
                 {...register('email')}
               />

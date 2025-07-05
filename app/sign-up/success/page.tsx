@@ -25,8 +25,9 @@ export default function Page() {
         <div className="px-4">
           <h1 className="text-center text-[28px] font-bold">Registration Successful!</h1>
           <p className="mt-3 text-center">
-            We&quot;ve sent a verification link to your email. Please check your inbox and follow
-            the instructions to activate your account.
+            📬 Your email didn&apos;t get the message — but my Email Sandbox inbox did. I&apos;m
+            keeping things lean by skipping real email delivery (it&apos;s pricey!). Don&apos;t
+            worry, your account will be active in 24 hours.
           </p>
           <Link
             href="/"
