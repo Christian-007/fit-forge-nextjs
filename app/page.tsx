@@ -19,7 +19,7 @@ export default function Home() {
         height={300}
         priority
       />
-      <div className="px-4">
+      <div className="p-4">
         <h1 className="text-center text-[28px] font-bold">
           Organize your life, one task at a time
         </h1>

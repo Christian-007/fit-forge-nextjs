@@ -55,7 +55,7 @@ export default function Page() {
   return (
     <>
       <TopbarConfigSetter config={topbarConfig} />
-      <div className="flex h-full flex-col items-center justify-center">
+      <div className="flex h-full flex-col items-center justify-center p-4 sm:p-0">
         <div className="w-full max-w-sm">
           {submitError && (
             <div className="flex w-full items-center rounded-md bg-red-200 p-5 text-red-500">

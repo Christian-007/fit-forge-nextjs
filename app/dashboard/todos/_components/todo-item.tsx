@@ -10,7 +10,7 @@ type TodoItemProps = {
 export function TodoItem({ todo, handleOnChangeFn, handleOnClickOptionFn }: TodoItemProps) {
   return (
     <div key={todo.id} className="grid grid-cols-[1fr_24px] items-center gap-6 space-x-4">
-      <label className="peer grid grid-cols-[auto_1fr] items-center gap-3 rounded-md px-2 hover:bg-gray-100 dark:hover:bg-white/5">
+      <label className="peer grid grid-cols-[auto_1fr] items-center gap-3 rounded-md hover:bg-gray-100 dark:hover:bg-white/5">
         <input
           className="peer size-3.5 appearance-none rounded-sm border border-[#366347] accent-[#38E078] checked:appearance-auto"
           type="checkbox"

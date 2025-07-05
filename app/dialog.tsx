@@ -22,7 +22,7 @@ export function Dialog() {
     <div
       className={clsx(
         isOpen ? 'opacity-100' : 'pointer-events-none opacity-0',
-        'fixed inset-0 z-50 flex items-center justify-center bg-black/50 transition-opacity duration-500 ease-in-out'
+        'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 transition-opacity duration-500 ease-in-out'
       )}
     >
       <div

@@ -19,7 +19,7 @@ export default function Page() {
   return (
     <>
       <TopbarConfigSetter config={topbarConfig} />
-      <div className="flex h-full flex-col items-center justify-center">
+      <div className="flex h-full flex-col items-center justify-center p-4">
         <div className="w-full max-w-sm">
           <AddTodoForm />
         </div>
