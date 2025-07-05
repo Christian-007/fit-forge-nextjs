@@ -1,4 +1,6 @@
 /** @type {import('next').NextConfig} */
+const isProd = process.env.NODE_ENV === 'production';
+
 const nextConfig = {
   async redirects() {
     return [
@@ -19,6 +21,12 @@ const nextConfig = {
     ];
   },
   output: 'standalone',
+  images: isProd
+    ? {
+        loader: 'custom',
+        loaderFile: './cloudflare-image-loader.ts',
+      }
+    : {},
 };
 
 export default nextConfig;
