@@ -97,7 +97,7 @@ export default function Page() {
               {loading ? <LoadingIndicator text="Logging in..." /> : 'Login'}
             </button>
             <div className="mt-4 text-center text-sm text-[#96C4A8]">
-              <span>Don&quot;t have an account?</span>
+              <span>Don&apos;t have an account?</span>
               <Link href="/sign-up" className="ml-1 underline hover:text-white">
                 Sign up
               </Link>
