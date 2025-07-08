@@ -1,36 +1,33 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Software Architecture Diagram
 
-## Getting Started
+To achieve separation of concerns, this project incorporates a layered-architecture (router, handlers, and repositories) but only on the server side (Next.js Router Handlers). The Router Handlers only act as Proxy Server as this gives an advantage of masking some secrets like API keys and HTTP Only Cookie.
 
-First, run the development server:
+As for the client-side data fetching, React Query is used to handle the data fetching state as well as out-of-the-box caching mechanism.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+![Dexalune's Software Architecture](https://github.com/Christian-007/fit-forge-nextjs/blob/main/docs/frontend-architecture.png?raw=true)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+# Cloud Architecture Diagram
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+This project mainly utilises Google Cloud Platform products to achieve high scalability and availability. Cloudflare Registrar and proxied DNS are also used on top of Google Cloud services to protect the site and APIs from DDoS attacks and to optimize images.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+![Dexalune's Cloud Architecture](https://github.com/Christian-007/fit-forge/blob/master/docs/dexalune-cloud-architecture.png?raw=true)
 
-## Learn More
+## Related repositories
 
-To learn more about Next.js, take a look at the following resources:
+- Frontend (Next.js): https://github.com/Christian-007/fit-forge-nextjs
+- Core API (Go): https://github.com/Christian-007/fit-forge
+- Notification API (Go): https://github.com/Christian-007/fit-forge-notification
+- Scheduler (Go): https://github.com/Christian-007/fit-forge-scheduler
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Tech Stack
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Language: `TypeScript`
+- Frontend framework: `Next.js` (v14 App Router)
+- Libraries: `@tanstack/react-query`, `react-hook-form`, `zod`, `react-hot-toast`
 
-## Deploy on Vercel
+# Running on a local machine
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Clone this project (make sure to use at least Node v22)
+2. Install the dependencies using `npm install`
+3. Run the project using `npm run dev`
+4. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
