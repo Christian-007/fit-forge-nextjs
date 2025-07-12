@@ -29,12 +29,14 @@ export function createHttpClient() {
       });
 
       if (!res.ok) {
-        const errResponseBody = await res.json().catch(() => {});
+        const errResBody = await res.json().catch(() => {});
+        console.log('[HttpClient - !res.ok] res: ', res);
+        console.log('[HttpClient - !res.ok] error: ', errResBody);
         return {
           ok: false,
           status: res.status,
           statusText: res.statusText,
-          error: errResponseBody.message ?? 'Unexpected error happened',
+          error: errResBody instanceof Error ? errResBody.message : 'Unexpected error happened',
         };
       }
 
@@ -51,6 +53,7 @@ export function createHttpClient() {
         body: responseBody,
       };
     } catch (err) {
+      console.log('[HttpClient] Error Catch: ', err);
       return {
         ok: false,
         status: 500,
