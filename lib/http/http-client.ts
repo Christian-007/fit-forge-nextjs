@@ -30,8 +30,13 @@ export function createHttpClient() {
 
       if (!res.ok) {
         const errResBody = await res.json().catch(() => {});
-        console.log('[HttpClient - !res.ok] res: ', res);
-        console.log('[HttpClient - !res.ok] error: ', errResBody);
+        console.log('[HttpClient - !res.ok] res:', {
+          status: res.status,
+          statusText: res.statusText,
+          headers: Object.fromEntries(res.headers.entries()),
+          url: res.url,
+          body: errResBody,
+        });
         return {
           ok: false,
           status: res.status,
