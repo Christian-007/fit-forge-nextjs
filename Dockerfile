@@ -29,7 +29,20 @@ COPY . .
 # Uncomment the following line in case you want to disable telemetry during the build.
 ENV NEXT_TELEMETRY_DISABLED=1
 
-COPY .env.local .env.production
+# Uncomment the following line if you'd like to build the docker image locally not via CI/CD
+# COPY .env.local .env.production
+
+# Comment the `ARG` and `ENV` lines if you'd like to build the docker image locally not via CI/CD
+ARG ENV
+ARG NEXT_PUBLIC_NOTIFICATION_API_URL
+ARG CORE_API_URL
+ARG NEXT_PUBLIC_WEBSITE_URL
+
+ENV ENV=$ENV
+ENV NEXT_PUBLIC_NOTIFICATION_API_URL=$NEXT_PUBLIC_NOTIFICATION_API_URL
+ENV CORE_API_URL=$CORE_API_URL
+ENV NEXT_PUBLIC_WEBSITE_URL=$NEXT_PUBLIC_WEBSITE_URL
+
 RUN npm run build
 
 # Production image, copy all the files and run next
